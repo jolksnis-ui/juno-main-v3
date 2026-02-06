@@ -2,19 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LOGO_SRC } from '@/lib/constants';
 
 export const Preloader = () => {
+  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Skip splash when landing directly on auth pages (only on initial load)
+    const isAuthPath =
+      pathname === '/login' ||
+      pathname === '/open-account' ||
+      pathname.startsWith('/open-account/');
+    if (isAuthPath) {
+      setIsLoading(false);
+      return;
+    }
+
     // Total animation duration control (extended for drama)
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 3500); // 3.5s total duration
 
     return () => clearTimeout(timer);
+    // Run only on mount so navigating back to home doesn't re-trigger preloader
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

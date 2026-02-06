@@ -1,18 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthLayout } from '@/components/layout/auth-layout';
 import { GetStartedButton } from '@/components/ui/get-started-button';
-import { Input } from '@/components/ui/input';
 import { AppLink } from '@/components/ui/app-link';
 import { cn } from '@/lib/utils';
 import { FONT } from '@/lib/constants';
-import { z } from 'zod';
 
 /** Same in-frame transition as login → 2FA */
 const CONTENT_TRANSITION = {
@@ -20,38 +16,26 @@ const CONTENT_TRANSITION = {
   ease: [0.76, 0, 0.24, 1] as const,
 };
 
-/** Simple email schema for get started form */
-const getStartedSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email'),
-});
-
-type GetStartedFormValues = z.infer<typeof getStartedSchema>;
-
 /**
- * Get Started page matching Figma design
- * Simple email signup flow
+ * Contact Support page (2FA flow).
+ * Reached from login page (2FA step) via "Contact Support" link.
+ * "Back to verification" returns to login page with 2FA step.
  */
-export default function OpenAccountPage() {
-  const [isSuccess, setIsSuccess] = useState(false);
+export default function ContactSupportPage() {
   const router = useRouter();
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-  } = useForm<GetStartedFormValues>({
-    resolver: zodResolver(getStartedSchema),
-    mode: 'onChange',
-  });
-
-  /** Handle form submission */
-  const onSubmit = async (data: GetStartedFormValues) => {
-    console.log('Get Started submission:', data);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSuccess(true);
+  const onSubmitSupportRequest = async () => {
+    setIsSubmitting(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setIsSuccess(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  /** Handle close after success - client nav to skip splash preloader */
   const handleClose = () => {
     router.push('/');
   };
@@ -77,7 +61,7 @@ export default function OpenAccountPage() {
                   className="shrink-0"
                 />
                 <h1 className={cn('text-[28px] leading-[32px] text-juno-900 lg:text-[34px] lg:leading-[38px]', FONT.serif)}>
-                  Successful, a member of our team will be in touch shortly.
+                  A member of our team will be in touch.
                 </h1>
               </div>
 
@@ -101,44 +85,34 @@ export default function OpenAccountPage() {
           >
               <div className="mb-9 lg:mb-9">
                 <h1 className={cn('text-[28px] leading-[32px] text-juno-900 lg:text-[34px] lg:leading-[38px]', FONT.serif)}>
-                  Get Started
+                  Contact Support
                 </h1>
                 <p className="mt-3 text-base text-juno-700 lg:mt-3">
-                  To sign up enter your email and a member of our team will be in touch shortly.
+                  If you are having issues signing in via 2FA submit a support request by clicking below and a member of our
+                  team will be in touch.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  autoComplete="email"
-                  aria-label="Email address"
-                  error={errors.email?.message}
-                  {...register('email')}
-                />
-
-                <GetStartedButton
-                  type="submit"
-                  variant="dark"
-                  label="Submit"
-                  isLoading={isSubmitting}
-                  loadingLabel="Submitting..."
-                  disabled={!isValid}
-                  className="mt-8 w-full lg:mt-9"
-                />
-              </form>
+              <GetStartedButton
+                type="button"
+                variant="dark"
+                label="Submit Support Request"
+                isLoading={isSubmitting}
+                loadingLabel="Submitting..."
+                onClick={onSubmitSupportRequest}
+                className="w-full"
+              />
 
               <p className="mt-6 flex flex-wrap items-center justify-center gap-2 text-center text-sm font-normal text-juno-500 lg:mt-8">
-                <span>Already have an account?</span>
+                <span>Can&apos;t complete verification?</span>
                 <AppLink
-                  href="/login"
+                  href="/login?step=2fa"
                   className={cn(
                     FONT.mono,
-                    'border-b border-transparent font-normal text-juno-900 transition-colors hover:border-juno-900 hover:text-juno-700'
+                    'cursor-pointer border-b border-transparent font-normal text-juno-900 transition-colors hover:border-juno-900 hover:text-juno-700'
                   )}
                 >
-                  Log in
+                  Back to verification
                 </AppLink>
               </p>
           </motion.div>

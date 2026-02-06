@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from './header';
 
 /** Auth routes where header should not appear */
-const AUTH_ROUTES = ['/login', '/open-account', '/forgot-password'];
+const AUTH_ROUTES = ['/login', '/open-account', '/forgot-password', '/two-factor-authentication'];
 
 /** Routes where header should use dark theme */
 const DARK_HEADER_ROUTES = ['/corporate-account', '/about'];

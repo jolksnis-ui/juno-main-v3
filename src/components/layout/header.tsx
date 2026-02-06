@@ -213,6 +213,22 @@ export function Header({ isDark = false }: HeaderProps) {
                   <NavLink href={NAV_ITEMS.right[1].href} onClick={() => setExpanded(false)} isDark={isDark}>
                     {NAV_ITEMS.right[1].label}
                   </NavLink>
+
+                  {/* Mobile-only: header hides "Log in" below sm, so expose it here */}
+                  <div className="mt-6 sm:hidden">
+                    <AppLink
+                      href="/login"
+                      onClick={() => setExpanded(false)}
+                      className={cn(
+                        'flex h-12 w-full items-center justify-center rounded border px-4 font-[family-name:var(--font-geist-mono)] text-sm transition-all duration-500 ease-out',
+                        isDark
+                          ? 'border-[#3F3F46] text-white hover:border-[#A0A0AB]'
+                          : 'border-[#d1d1d6] text-[#18181B] hover:border-[#70707b]'
+                      )}
+                    >
+                      Log in
+                    </AppLink>
+                  </div>
                 </div>
                 {/* Desktop: two-column grid (Everyday banking, About us / Corporate account, Contact us) */}
                 <div className="hidden grid-cols-2 gap-x-8 lg:grid">

@@ -96,6 +96,7 @@ export const Footer = () => {
           {/* Open Account Button */}
           <FadeInView delay={0.4} className="w-full md:w-auto lg:w-auto">
             <GetStartedButton
+              href="/open-account"
               label={BUTTON_TEXT.openAccount}
               variant="light"
               className="w-full md:w-auto lg:w-auto"

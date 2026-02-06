@@ -82,6 +82,80 @@ nextjs-portal {
   display: none !important;
 }
 
+/* Auth pages: mobile – logo and frame at top, frame-wrapper does not grow */
+@media (max-width: 799px) {
+  .auth-main-content {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+  }
+  .auth-frame-wrapper {
+    flex: none !important;
+  }
+}
+@media (min-width: 800px) and (max-width: 1280px) {
+  .auth-main-content {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+}
+
+/* Auth pages: tablet only (800px–1280px) – 40px horizontal padding, footer inside, frame centered */
+@media (min-width: 800px) and (max-width: 1280px) {
+  .auth-layout {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+  .auth-footer-absolute {
+    display: none !important;
+  }
+  .auth-frame-wrapper {
+    flex: 1 !important;
+    min-height: 0 !important;
+  }
+  /* 24px offset below "© Juno Money 2025" text on tablet */
+  .auth-main-content > p {
+    margin-bottom: 24px !important;
+  }
+}
+
+/* Auth pages: desktop (1281px+) – restore original: centered card, no mobile/tablet overrides */
+@media (min-width: 1281px) {
+  /* Desktop-only auth elements (avoid Tailwind breakpoint drift) */
+  .auth-desktop-only {
+    display: flex !important;
+  }
+  .auth-desktop-only-block {
+    display: block !important;
+  }
+
+  .auth-main-content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: stretch !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+  .auth-frame-wrapper {
+    flex: 1 !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+}
+
 /* Trust, Security & Infrastructure – light blue shade, minimal darkening */
 .infrastructure-tab-image {
   filter: brightness(1) contrast(1.02) saturate(0.92) hue-rotate(-6deg);
@@ -104,6 +178,14 @@ nextjs-portal {
 /* Compliance tab only – balanced: slightly brighter, less contrast so window/floor feel even */
 .infrastructure-section .compliance-tab-image {
   filter: brightness(0.94) contrast(1.18) saturate(0.96) hue-rotate(-6deg);
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Auth pages (login, open account, success) – cool teal-blue sky, bright white, charcoal, slightly desaturated */
+.auth-panel-image {
+  filter: brightness(0.94) contrast(1.18) saturate(0.86) hue-rotate(-3deg);
   image-rendering: auto;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;

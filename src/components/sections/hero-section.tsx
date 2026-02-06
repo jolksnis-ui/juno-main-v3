@@ -107,6 +107,7 @@ const HeroSection = () => {
             className="w-full md:w-auto lg:w-auto"
           >
             <GetStartedButton
+              href="/open-account"
               label={BUTTON_TEXT.openAccount}
               className="w-full md:w-auto lg:w-auto"
             />

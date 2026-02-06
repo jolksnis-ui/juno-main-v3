@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef } from 'react';
+import { AppLink } from '@/components/ui/app-link';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BUTTON_TEXT, DIMENSIONS, FONT } from '@/lib/constants';
@@ -11,22 +12,36 @@ interface GetStartedButtonProps
   label?: string;
   /** Visual variant - dark (default) or light */
   variant?: 'dark' | 'light';
+  /** When set, renders as a link to this href instead of a button (same look as button, navigates on click) */
+  href?: string;
   /** Loading state for form submissions */
   isLoading?: boolean;
   /** Text shown during loading state */
   loadingLabel?: string;
 }
 
-/**
- * Primary CTA button with sliding chevron animation
- * Supports dark/light variants and loading state for forms
- */
+/** Button style with sliding chevron animation */
+const buttonOrLinkClasses = (
+  isLight: boolean,
+  className?: string
+) =>
+  cn(
+    'group relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-[4px] px-8 text-base font-normal transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+    FONT.mono,
+    isLight
+      ? 'bg-white text-juno-900 focus-visible:ring-juno-900'
+      : 'bg-juno-900 text-white focus-visible:ring-white',
+    className
+  );
+
 const GetStartedButton = forwardRef<HTMLButtonElement, GetStartedButtonProps>(
   (
     {
       className,
       label = BUTTON_TEXT.getStarted,
       variant = 'dark',
+      href,
       isLoading = false,
       loadingLabel = 'Sending...',
       disabled,
@@ -36,24 +51,8 @@ const GetStartedButton = forwardRef<HTMLButtonElement, GetStartedButtonProps>(
   ) => {
     const isLight = variant === 'light';
     const displayLabel = isLoading ? loadingLabel : label;
-
-    return (
-      <button
-        ref={ref}
-        disabled={disabled || isLoading}
-        style={{ height: DIMENSIONS.buttonHeight }}
-        className={cn(
-          'group relative inline-flex items-center justify-center overflow-hidden rounded-[4px] px-8 text-base font-normal transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'disabled:pointer-events-none disabled:opacity-50',
-          FONT.mono,
-          isLight
-            ? 'bg-white text-juno-900 focus-visible:ring-juno-900'
-            : 'bg-juno-900 text-white focus-visible:ring-white',
-          className
-        )}
-        {...props}
-      >
+    const contentWithChevron = (
+      <>
         <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0">
           {displayLabel}
         </span>
@@ -72,6 +71,34 @@ const GetStartedButton = forwardRef<HTMLButtonElement, GetStartedButtonProps>(
             />
           </i>
         )}
+      </>
+    );
+
+    if (href) {
+      return (
+        <AppLink
+          href={href}
+          scroll={false}
+          style={{ height: DIMENSIONS.buttonHeight }}
+          className={buttonOrLinkClasses(isLight, className)}
+        >
+          {contentWithChevron}
+        </AppLink>
+      );
+    }
+
+    return (
+      <button
+        ref={ref}
+        disabled={disabled || isLoading}
+        style={{ height: DIMENSIONS.buttonHeight }}
+        className={cn(
+          'disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-50',
+          buttonOrLinkClasses(isLight, className)
+        )}
+        {...props}
+      >
+        {contentWithChevron}
       </button>
     );
   }

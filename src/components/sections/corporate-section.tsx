@@ -106,7 +106,7 @@ const CorporateSection = () => {
                   {CORPORATE_SECTION.headlineLine2}
                 </>
               }
-              action={<GetStartedButton label={BUTTON_TEXT.openAccount} variant="dark" />}
+              action={<GetStartedButton href="/open-account" label={BUTTON_TEXT.openAccount} variant="dark" />}
             />
           </ScrollReveal>
         </div>
@@ -125,6 +125,7 @@ const CorporateSection = () => {
             {CORPORATE_SECTION.headline}
           </h2>
           <GetStartedButton
+            href="/open-account"
             label={BUTTON_TEXT.openAccount}
             variant="dark"
             className="mt-8 w-full md:w-auto"
@@ -258,19 +259,18 @@ const FeatureItem = ({
           ? (feature.description.length > 50 ? ROW_HEIGHT.activeTwoLines : ROW_HEIGHT.activeOneLine)
           : ROW_HEIGHT.inactive,
       }}
-      transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       className="flex flex-col justify-center overflow-hidden pt-6 pb-6"
     >
-      {/* Title - no layout; style only so it stays centered by flex */}
+      {/* Title - smooth size/color in both directions */}
       <motion.h3
         animate={{
           fontSize: isActive ? '28px' : '20px',
           lineHeight: isActive ? '32px' : '24px',
           color: isActive ? 'var(--juno-gray-900)' : 'var(--juno-gray-700)',
         }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         className={cn(
-          'transition-colors duration-200',
           FONT.serif,
           !isActive && 'group-hover:text-juno-900'
         )}
@@ -278,23 +278,29 @@ const FeatureItem = ({
         {feature.title}
       </motion.h3>
 
-      {/* Description - height auto so 1 line = compact, 2 lines = both visible; frame fits content */}
-      <AnimatePresence initial={false}>
-        {isActive && (
-          <motion.div
-            key="description"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden"
-          >
-            <p className="mt-3 text-base leading-normal text-juno-700" style={{ lineHeight: 1.5 }}>
-              {feature.description}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Description slot - height animates in sync with row so center stays stable (no jump) */}
+      <motion.div
+        animate={{
+          height: isActive
+            ? (feature.description.length > 50 ? 56 : 36)
+            : 0,
+        }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        className="overflow-hidden"
+      >
+        <motion.p
+          animate={{ opacity: isActive ? 1 : 0 }}
+          transition={{
+            duration: isActive ? 0.4 : 0.35,
+            delay: isActive ? 0.1 : 0,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
+          className="mt-3 text-base leading-normal text-juno-700"
+          style={{ lineHeight: 1.5 }}
+        >
+          {feature.description}
+        </motion.p>
+      </motion.div>
     </motion.div>
 
     {/* Progress bar – same duration as auto-rotate interval */}

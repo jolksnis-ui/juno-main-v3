@@ -68,6 +68,7 @@ export const HERO_VIDEO_URL =
 export const FONT = {
   serif: 'font-[family-name:var(--font-prata)]',
   mono: 'font-[family-name:var(--font-geist-mono)]',
+  sans: 'font-[family-name:var(--font-geist-sans)]',
 } as const;
 
 /** Video paths */
