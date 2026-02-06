@@ -82,12 +82,16 @@ nextjs-portal {
   display: none !important;
 }
 
-/* Auth pages: mobile – logo and frame at top, frame-wrapper does not grow */
+/* Auth pages: mobile – same logic as tablet/desktop: 32px top, logo+frame at top, 40px gap to footer, footer in flow; when short → scroll, when tall → footer stuck at bottom */
 @media (max-width: 799px) {
+  .auth-footer-absolute {
+    display: none !important; /* use in-flow footer so it can sit 40px below frame and stick at bottom when tall */
+  }
   .auth-main-content {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    flex: 1 !important;
+    flex: none !important;
+    min-height: 100vh !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
@@ -107,7 +111,7 @@ nextjs-portal {
   }
 }
 
-/* Auth pages: tablet only (800px–1280px) – 40px horizontal padding, footer inside, frame centered */
+/* Auth pages: tablet only (800px–1280px) – same logic as desktop: 48px top min, logo+frame centered, 48px gap, footer 48px above/below, scroll when short */
 @media (min-width: 800px) and (max-width: 1280px) {
   .auth-layout {
     padding-left: 40px !important;
@@ -116,13 +120,13 @@ nextjs-portal {
   .auth-footer-absolute {
     display: none !important;
   }
-  .auth-frame-wrapper {
-    flex: 1 !important;
-    min-height: 0 !important;
+  .auth-main-content {
+    flex: none !important;
+    min-height: 100vh !important;
   }
-  /* 24px offset below "© Juno Money 2025" text on tablet */
-  .auth-main-content > p {
-    margin-bottom: 24px !important;
+  .auth-frame-wrapper {
+    flex: none !important;
+    min-height: 0 !important;
   }
 }
 
@@ -136,8 +140,10 @@ nextjs-portal {
     display: block !important;
   }
 
+  /* min-height 100vh so content can grow and page scrolls when viewport is short */
   .auth-main-content {
-    flex: 1 !important;
+    flex: none !important;
+    min-height: 100vh !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
