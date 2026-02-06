@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { Suspense, useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,12 +39,21 @@ function EyeIcon22({ show }: { show: boolean }) {
   );
 }
 
+/** Fallback while search params are resolving (required for useSearchParams in Next.js) */
+function LoginFallback() {
+  return (
+    <div className="flex min-h-[280px] items-center justify-center text-base text-juno-500">
+      Loading...
+    </div>
+  );
+}
+
 /**
- * Login page matching Figma design.
+ * Inner login content – uses useSearchParams, so must be inside Suspense.
  * After submit, content transitions in-frame to 2FA form (same animation, inside the card).
  * "Contact Support" on 2FA navigates to contact-support page (full page transition).
  */
-export default function LoginPage() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isTwoFactor, setIsTwoFactor] = useState(false);
@@ -114,8 +123,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout>
-      <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait">
         {!isTwoFactor && (
           <motion.div
             key="login"
@@ -304,6 +312,18 @@ export default function LoginPage() {
           </motion.div>
         )}
       </AnimatePresence>
+  );
+}
+
+/**
+ * Login page – wraps content in Suspense so useSearchParams() is allowed during prerender.
+ */
+export default function LoginPage() {
+  return (
+    <AuthLayout>
+      <Suspense fallback={<LoginFallback />}>
+        <LoginContent />
+      </Suspense>
     </AuthLayout>
   );
 }
